@@ -1,0 +1,5 @@
+cache.json
+tally_cache.json
+__pycache__/
+*.pyc
+200.html

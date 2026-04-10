@@ -592,6 +592,9 @@
             <button class="tab" onclick="switchTab(4)">
                 🎂 Anniversaires
             </button>
+            <button class="tab" onclick="switchTab(5)">
+                📍 Créateurs de créneaux
+            </button>
 
         </div>
 
@@ -602,6 +605,7 @@
         <div id="tab-2" class="tab-content"></div>
         <div id="tab-3" class="tab-content"></div>
         <div id="tab-4" class="tab-content"></div>
+        <div id="tab-5" class="tab-content"></div>
 
         <div class="last-update" id="last-update"></div>
         
@@ -9991,6 +9995,9 @@ async function loadData() {
             // Vue 5: Anniversaires
             renderBirthdaysTable();
 
+            // Vue 6: Créateurs de créneaux
+            renderCreneauxTable();
+
             // Dernière mise à jour
             document.getElementById('last-update').textContent = 
                 `Dernière mise à jour: ${new Date().toLocaleString('fr-FR')}`;
@@ -10322,6 +10329,44 @@ function renderLoyalMembersTable() {
                 content.innerHTML = renderPodiumAndList(topMembers);
             }
         };
+
+        function renderCreneauxTable() {
+            const creators = data.creneaux_creators || [];
+
+            if (creators.length === 0) {
+                document.getElementById('tab-5').innerHTML = '<div class="table-container"><div class="empty-state"><div class="empty-state-icon">📍</div><p>Aucun créateur de créneau trouvé</p></div></div>';
+                return;
+            }
+
+            let html = '<div class="table-container"><table><thead><tr>' +
+                '<th>Nom</th>' +
+                '<th>Email</th>' +
+                '<th style="width: 130px;">Téléphone</th>' +
+                '<th style="width: 200px;">Dernier créneau</th>' +
+                '<th style="width: 180px;">Lieu</th>' +
+                '<th style="width: 80px;">Total</th>' +
+                '<th style="width: 110px;">Dernier le</th>' +
+                '</tr></thead><tbody>';
+
+            creators.forEach(c => {
+                const phone = c.phone || '-';
+                const lastDate = c.last_date ? new Date(c.last_date).toLocaleDateString('fr-FR') : '-';
+                const location = c.last_location || '-';
+
+                html += '<tr>';
+                html += '<td><strong>' + c.name + '</strong></td>';
+                html += '<td>' + c.email + '</td>';
+                html += '<td>' + phone + '</td>';
+                html += '<td>' + c.last_event + '</td>';
+                html += '<td>' + location + '</td>';
+                html += '<td style="text-align: center;"><span class="badge badge-ok">' + c.total_creneaux + '</span></td>';
+                html += '<td>' + lastDate + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div>';
+            document.getElementById('tab-5').innerHTML = html;
+        }
 
         function renderBirthdaysTable() {
             const birthdays = data.anniversaires || [];
